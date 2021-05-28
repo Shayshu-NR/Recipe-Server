@@ -117,8 +117,25 @@
         $("#login").on("submit", function(e){
             e.preventDefault();
 
+            var username = $("#username").val()
+            var password = $("#password").val()
+
+            var dataDict = JSON.stringify({"username" : username, "password" : password})
+            console.log(dataDict)
             // Send ajax request 
-            console.log("Trying to login")
+            $.ajax({
+                type: "POST",
+                url: "default.aspx/Login",
+                dataType: "json",
+                data: dataDict,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    console.log("Trying to login")
+                    console.log(data);
+                }
+            })
+            
+           
         })
     });
 </script>

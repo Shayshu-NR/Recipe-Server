@@ -56,3 +56,33 @@ D:\javascript_projects\Recipe\Recipe-Server\NR Valut\obj\Debug\NR Valut.csprojAs
 D:\javascript_projects\Recipe\Recipe-Server\NR Valut\obj\Debug\NR Valut.csproj.CopyComplete
 D:\javascript_projects\Recipe\Recipe-Server\NR Valut\obj\Debug\NR Valut.dll
 D:\javascript_projects\Recipe\Recipe-Server\NR Valut\obj\Debug\NR Valut.pdb
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Microsoft.Bcl.AsyncInterfaces.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Newtonsoft.Json.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Buffers.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Memory.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Numerics.Vectors.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Runtime.CompilerServices.Unsafe.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Text.Encodings.Web.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Text.Json.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Threading.Tasks.Extensions.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.ValueTuple.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Microsoft.Bcl.AsyncInterfaces.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Newtonsoft.Json.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Buffers.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Memory.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Numerics.Vectors.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Runtime.CompilerServices.Unsafe.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Text.Encodings.Web.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Text.Json.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.Threading.Tasks.Extensions.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\System.ValueTuple.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\MySql.Data.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Google.Protobuf.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Zstandard.Net.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\K4os.Compression.LZ4.Streams.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\BouncyCastle.Crypto.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Ubiety.Dns.Core.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Renci.SshNet.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\K4os.Compression.LZ4.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\K4os.Hash.xxHash.dll
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\MySql.Data.xml
