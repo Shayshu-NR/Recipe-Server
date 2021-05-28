@@ -69,12 +69,12 @@
 
     <div class="container text-center form-group">
         <div class="row justify-content-center align-items-center">
-            <form class="col-md-5 card p-3">
+            <form class="col-md-5 card p-3" id="login">
                 <h1 class="h3 mb-3 font-weight-normal">
                     Login
                 </h1>
 
-                <input type="email" class="form-control validate[required[email]]" placeholder="Email Address"
+                <input type="username" class="form-control" placeholder="Username"
                     id="username" required="" autofocus="">
 
                 <br>
@@ -116,5 +116,12 @@
                 $(".fa").addClass("fa-eye");
             }
         });
+
+        $("#login").on("submit", function(e){
+            e.preventDefault();
+
+            // Send ajax request 
+            console.log("Trying to login")
+        })
     });
 </script>
