@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="photo.aspx.cs" Inherits="NR_Valut.photo" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="email.aspx.cs" Inherits="NR_Valut.email" %>
 
 <!DOCTYPE html>
 

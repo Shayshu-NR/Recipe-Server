@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="vault.aspx.cs" Inherits="NR_Valut.vault" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="vault.aspx.cs" Inherits="NR_Valut.vault" %>
 
 <!DOCTYPE html>
 

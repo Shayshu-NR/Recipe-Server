@@ -101,6 +101,7 @@
   <ItemGroup>
     <Content Include="admin.aspx" />
     <Content Include="default.aspx" />
+    <Content Include="email.aspx" />
     <Content Include="photo.aspx" />
     <Content Include="recipe.aspx" />
     <Content Include="recipe.html" />
@@ -121,6 +122,13 @@
     </Compile>
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="email.aspx.cs">
+      <DependentUpon>email.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="email.aspx.designer.cs">
+      <DependentUpon>email.aspx</DependentUpon>
     </Compile>
     <Compile Include="photo.aspx.cs">
       <DependentUpon>photo.aspx</DependentUpon>

@@ -33,7 +33,11 @@ namespace NR_Valut
             {
                 return "{\"Error\" : \"Login failed\"}";
             }
+        }
 
+        [WebMethod]
+        public static string getUserInfo(string username, string password){
+            return "";
         }
 
         class DBConnect
