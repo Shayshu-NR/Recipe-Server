@@ -13,6 +13,8 @@ namespace NR_Valut
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var response = HttpContext.Current.Response;
+            Response.Write(response.Cookies["userName"].Value + "Test");
         }
 
         [WebMethod]
@@ -27,10 +29,57 @@ namespace NR_Valut
                 string respType = dbResp[2][0];
 
                 // If no exception is caught then the user logged in sucessfully...
+                // Make sure to set cookies for later...
+                var response = HttpContext.Current.Response;
+                if(response.Cookies["userName"] != null)
+                {
+                    response.Cookies["userName"].Value = respUsername;
+                }
+                else
+                {
+                    var userNameCookie = new HttpCookie("userName");
+                    userNameCookie.Value = respUsername;
+                    response.Cookies.Add(userNameCookie);
+                }
+
+                if(response.Cookies["loggedIn"] != null)
+                {
+                    response.Cookies["loggedIn"].Value = "True";
+                }
+                else
+                {
+                    var loggedInCookie = new HttpCookie("loggedIn");
+                    loggedInCookie.Value = "True";
+                    response.Cookies.Add(loggedInCookie);
+                }
+
                 return "{\"Success\" : \"Login sucessful\"}";
             }
             catch (ArgumentOutOfRangeException excp)
             {
+                var response = HttpContext.Current.Response;
+                if (response.Cookies["userName"] != null)
+                {
+                    response.Cookies["userName"].Value = "";
+                }
+                else
+                {
+                    var userNameCookie = new HttpCookie("userName");
+                    userNameCookie.Value = "";
+                    response.Cookies.Add(userNameCookie);
+                }
+
+                if (response.Cookies["loggedIn"] != null)
+                {
+                    response.Cookies["loggedIn"].Value = "False";
+                }
+                else
+                {
+                    var loggedInCookie = new HttpCookie("loggedIn");
+                    loggedInCookie.Value = "False";
+                    response.Cookies.Add(loggedInCookie);
+                }
+
                 return "{\"Error\" : \"Login failed\"}";
             }
         }
