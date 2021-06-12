@@ -6,6 +6,7 @@ using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using MySql.Data.MySqlClient;
+using System.Text.Json;
 
 namespace NR_Valut
 {
@@ -13,15 +14,20 @@ namespace NR_Valut
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var response = HttpContext.Current.Response;
-            Response.Write(response.Cookies["userName"].Value + "Test");
+            if (Request.Cookies["loggedIn"] != null)
+            {
+
+            }
         }
 
         [WebMethod]
-        public static string Login(string username, string password){
-            string query = "SELECT username, password, type FROM users WHERE username= '" + username + "' AND password='" + password + "'";
+        public static string Login(string username, string password)
+        {
+            string query = "SELECT * FROM  users U LEFT JOIN  user_types UT ON U.type = UT.typeid LEFT JOIN  user_info UI ON U.id = UI.iduser_info WHERE U.username= '" + username + "' AND U.password='" + password + "'";
             DBConnect db = new DBConnect();
-            List<string>[] dbResp = db.Select(query, 3, new List<string>(new[] { "username", "password", "type" }));
+            List<string> wantedFields = new List<string>(new[] { "id", "username", "password", "datecreated", "lastlogin", "user_type", "user_permision", "recipe_permision", "photo_permision", "email", "verified", "birthday", "language", "phone_number" });
+            int size = wantedFields.Count();
+            List<string>[] dbResp = db.Select(query, size, wantedFields);
             try
             {
                 string respUsername = dbResp[0][0];
@@ -31,7 +37,7 @@ namespace NR_Valut
                 // If no exception is caught then the user logged in sucessfully...
                 // Make sure to set cookies for later...
                 var response = HttpContext.Current.Response;
-                if(response.Cookies["userName"] != null)
+                if (response.Cookies["userName"] != null)
                 {
                     response.Cookies["userName"].Value = respUsername;
                 }
@@ -42,7 +48,7 @@ namespace NR_Valut
                     response.Cookies.Add(userNameCookie);
                 }
 
-                if(response.Cookies["loggedIn"] != null)
+                if (response.Cookies["loggedIn"] != null)
                 {
                     response.Cookies["loggedIn"].Value = "True";
                 }
@@ -53,7 +59,14 @@ namespace NR_Valut
                     response.Cookies.Add(loggedInCookie);
                 }
 
-                return "{\"Success\" : \"Login sucessful\"}";
+                // Send back profile information
+                userInfo details = new userInfo(dbResp);
+                string jsonResponse = JsonSerializer.Serialize(details);
+
+                // Update the last login date...
+
+
+                return "{\"Success\" : \"Login sucessful\", \"Info\" : " + jsonResponse   + "}";
             }
             catch (ArgumentOutOfRangeException excp)
             {
@@ -85,7 +98,8 @@ namespace NR_Valut
         }
 
         [WebMethod]
-        public static string getUserInfo(string username, string password){
+        public static string getUserInfo(string username, string password)
+        {
             return "";
         }
 
@@ -109,7 +123,7 @@ namespace NR_Valut
                 uid = "root";
                 password = "mysql";
                 string connectionString = "SERVER=" + server + ";" + "DATABASE=" + database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-                connect = new MySqlConnection(connectionString);                 
+                connect = new MySqlConnection(connectionString);
             }
 
             private bool OpenConnection()
@@ -119,7 +133,7 @@ namespace NR_Valut
                     connect.Open();
                     return true;
                 }
-                catch(MySqlException e)
+                catch (MySqlException e)
                 {
                     return false;
                 }
@@ -152,7 +166,7 @@ namespace NR_Valut
 
                     return false;
                 }
-                catch(MySqlException e)
+                catch (MySqlException e)
                 {
                     return false;
                 }
@@ -183,7 +197,7 @@ namespace NR_Valut
                         /*
                          data = [[id], [name] ... [rowSize]]
                          */
-                        for(int i = 0; i < rowSize; i++)
+                        for (int i = 0; i < rowSize; i++)
                         {
                             data[i] = new List<string>();
                         }
@@ -191,11 +205,11 @@ namespace NR_Valut
                         // Store all the info
                         while (dataReader.Read())
                         {
-                            for(int i = 0; i < rowSize; i++)
+                            for (int i = 0; i < rowSize; i++)
                             {
-                                
+
                                 data[i].Add(dataReader[requestedInfo[i]] + "");
-                                
+
                             }
                         }
 
@@ -210,7 +224,7 @@ namespace NR_Valut
                         return new List<string>[0];
                     }
                 }
-                catch(MySqlException e)
+                catch (MySqlException e)
                 {
                     return new List<string>[0];
                 }
@@ -220,6 +234,40 @@ namespace NR_Valut
             {
                 return 0;
             }
+        }
+
+        class userInfo
+        {
+            public string id { get; set; }
+            public string username { get; set; }
+            public string datecreated { get; set; }
+            public string lastlogin { get; set; }
+            public string user_type { get; set; }
+            public string user_permision { get; set; }
+            public string recipe_permision { get; set; }
+            public string photo_permision { get; set; }
+            public string email { get; set; }
+            public string verified { get; set; }
+            public string birthday { get; set; }
+            public string language { get; set; }
+            public string phone_number { get; set; }
+
+            public userInfo(List<string>[] values)
+            {
+                var vProperties = GetType().GetProperties();
+                int i = 0;
+                foreach (var props in vProperties)
+                {
+                    if (props.CanWrite
+                     && props.PropertyType.IsPublic
+                     && props.PropertyType == typeof(String))
+                    {
+                        props.SetValue(this, values[i][0], null);
+                    }
+                    i++;
+                }
+            }
+
         }
     }
 }
