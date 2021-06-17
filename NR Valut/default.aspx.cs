@@ -14,10 +14,8 @@ namespace NR_Valut
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Request.Cookies["loggedIn"] != null)
-            {
 
-            }
+           
         }
 
         [WebMethod]
@@ -63,10 +61,22 @@ namespace NR_Valut
                 userInfo details = new userInfo(dbResp);
                 string jsonResponse = JsonSerializer.Serialize(details);
 
-                // Update the last login date...
+                //Update the last login date...
+                if (db.Update(
+                    "users",
+                    new List<string>(new[] { "lastlogin" }),
+                    new List<string>(new[] { DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") }),
+                    new List<string>(new[] { "id" }),
+                    new List<string>(new[] { details.id }),
+                    new List<string>(new[] { "" })
+                ))
+                {
 
+                    return "{\"Success\" : \"Login sucessful\", \"Info\" : " + jsonResponse + "}";
+                }
 
-                return "{\"Success\" : \"Login sucessful\", \"Info\" : " + jsonResponse   + "}";
+                return "{\"Error\" : \"Login failed\"}";
+
             }
             catch (ArgumentOutOfRangeException excp)
             {
@@ -172,9 +182,45 @@ namespace NR_Valut
                 }
             }
 
-            public void Update()
+            public bool Update(string table, List<string> columns, List<string> values, List<string> whereCol, List<string> whereVal, List<string> whereOp)
             {
+                try
+                {
+                    if (this.OpenConnection() && columns.Count == values.Count && columns.Count > 0 && values.Count > 0)
+                    {
+                        // Create Update query
+                        string query = "UPDATE " + table + " SET ";
 
+                        var updateData = columns.Zip(values, (c, v) => new { columns = c, values = v });
+                        foreach (var data in updateData)
+                        {
+                            query += data.columns + " = '" + data.values + "', ";
+                        }
+
+                        query = query.TrimEnd(new Char[] { ' ', ',' });
+                        query += " WHERE ";
+
+                        var whereData = whereCol.Zip(whereVal, (c, v) => new { whereCol = c, whereVal = v });
+                        var i = 0;
+                        foreach (var data in whereData)
+                        {
+                            query += data.whereCol + " = '" + data.whereVal + "'" + whereOp[i] + " ";
+                            i++;
+                        }
+
+                        MySqlCommand cmd = new MySqlCommand(query, connect);
+                        cmd.ExecuteNonQuery();
+                        this.CloseConnection();
+
+                        return true;
+                    }
+
+                    return false;
+                }
+                catch (MySqlException e)
+                {
+                    return false;
+                }
             }
 
             public void Delete()
@@ -267,7 +313,6 @@ namespace NR_Valut
                     i++;
                 }
             }
-
         }
     }
 }
