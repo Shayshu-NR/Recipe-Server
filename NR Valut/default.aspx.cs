@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using MySql.Data.MySqlClient;
 using System.Text.Json;
+using Constants;
 
 namespace NR_Valut
 {
@@ -21,16 +22,16 @@ namespace NR_Valut
         [WebMethod]
         public static string Login(string username, string password)
         {
-            string query = "SELECT * FROM  users U LEFT JOIN  user_types UT ON U.type = UT.typeid LEFT JOIN  user_info UI ON U.id = UI.iduser_info WHERE U.username= '" + username + "' AND U.password='" + password + "'";
+            string query = Constants.Query.LoginQuery(username, password);
             DBConnect db = new DBConnect();
             List<string> wantedFields = new List<string>(new[] { "id", "username", "password", "datecreated", "lastlogin", "user_type", "user_permision", "recipe_permision", "photo_permision", "email", "verified", "birthday", "language", "phone_number" });
             int size = wantedFields.Count();
             List<string>[] dbResp = db.Select(query, size, wantedFields);
             try
             {
-                string respUsername = dbResp[0][0];
-                string respPassword = dbResp[1][0];
-                string respType = dbResp[2][0];
+                string respUsername = dbResp[1][0];
+                string respPassword = dbResp[2][0];
+                string respType = dbResp[5][0];
 
                 // If no exception is caught then the user logged in sucessfully...
                 // Make sure to set cookies for later...
@@ -58,7 +59,9 @@ namespace NR_Valut
                 }
 
                 // Send back profile information
-                userInfo details = new userInfo(dbResp);
+                List<string> goodToSend = dbResp.Select(s => s[0]).ToList();
+                goodToSend.RemoveAt(2);
+                userInfo details = new userInfo(goodToSend);
                 string jsonResponse = JsonSerializer.Serialize(details);
 
                 //Update the last login date...
@@ -298,7 +301,7 @@ namespace NR_Valut
             public string language { get; set; }
             public string phone_number { get; set; }
 
-            public userInfo(List<string>[] values)
+            public userInfo(List<string> values)
             {
                 var vProperties = GetType().GetProperties();
                 int i = 0;
@@ -308,7 +311,7 @@ namespace NR_Valut
                      && props.PropertyType.IsPublic
                      && props.PropertyType == typeof(String))
                     {
-                        props.SetValue(this, values[i][0], null);
+                        props.SetValue(this, values[i], null);
                     }
                     i++;
                 }
