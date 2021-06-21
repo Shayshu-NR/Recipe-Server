@@ -9,7 +9,7 @@ namespace Constants
     {
         public static string LoginQuery(string username, string password)
         {
-            return "SELECT id, username, password, datecreated, lastlogin, user_type, user_permision, recipe_permision, photo_permision, email, verified, birthday, language, phone_number FROM  users U LEFT JOIN  user_types UT ON U.type = UT.typeid LEFT JOIN  user_info UI ON U.id = UI.iduser_info WHERE U.username= '" + username + "' AND U.password='" + password + "'";
+            return "SELECT id, username, password, datecreated, lastlogin, user_type, user_permission, recipe_permission, photo_permission, email, verified, birthday, language, phone_number FROM  users U LEFT JOIN  user_types UT ON U.type = UT.typeid LEFT JOIN  user_info UI ON U.id = UI.iduser_info WHERE U.username= '" + username + "' AND U.password='" + password + "'";
         }
     }
 }

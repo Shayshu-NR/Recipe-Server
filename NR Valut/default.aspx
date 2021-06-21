@@ -152,7 +152,7 @@
       </div>
     </div>
 
-    <div id="userInfo" hidden>
+    <div id="userInfo" style="display: none;">
       <div class="container bootdey flex-grow-1 container-p-y">
         <div class="media align-items-center py-3 mb-3">
           <div class="media-body ml-4">
@@ -196,28 +196,26 @@
               <tbody>
                 <tr>
                   <th>Module Permission</th>
-                  <th>Users</th>
                   <th>Read</th>
                   <th>Write</th>
                   <th>Delete</th>
                 </tr>
-                <tr>
+                <!-- fa fa-check text-primary -->
+                <!-- -->
+                <tr id="userPermissions">
                   <td>Users</td>
                   <td><span class=""></span></td>
                   <td><span class=""></span></td>
                   <td><span class=""></span></td>
-                  <td><span class=""></span></td>
                 </tr>
-                <tr>
+                <tr id="userRecipes">
                   <td>Recipes</td>
                   <td><span class=""></span></td>
                   <td><span class=""></span></td>
                   <td><span class=""></span></td>
-                  <td><span class=""></span></td>
                 </tr>
-                <tr>
+                <tr id="userPhotos">
                   <td>Photos</td>
-                  <td><span class=""></span></td>
                   <td><span class=""></span></td>
                   <td><span class=""></span></td>
                   <td><span class=""></span></td>
@@ -318,7 +316,7 @@
         password = $("#password").val()
 
         var dataDict = JSON.stringify({ "username": username, "password": password })
-        console.log(dataDict)
+
         // Send ajax request 
         $.ajax({
           type: "POST",
@@ -328,7 +326,6 @@
           contentType: "application/json; charset=utf-8",
           success: function (data) {
             var recvData = JSON.parse(data.d);
-            console.log(recvData);
 
             if (recvData.Success != 'undefined') {
               // Show alert and remove login screen
@@ -337,17 +334,42 @@
                 $(".toast-body").html("Login Sucessful")
                 $("#loginStatus").toast('show')
 
-                // Get user info and show it...
-                $.ajax({
-                  type: "POST",
-                  url: "default.aspx/getUserInfo",
-                  dataType: "json",
-                  data: dataDict,
-                  contentType: "application/json; charset=utf-8",
-                  success: function (data) {
-                    console.log(data.d)
+                var userInfo  = recvData.Info;
+                $('#registerDate').text(userInfo.datecreated);
+                $('#lastActive').text(userInfo.lastlogin);
+                $('#verified').text(userInfo.verified);
+                $('#userRole').text(userInfo.user_type);
+
+                var userPermission = getPermissions(userInfo.user_permission);
+                var index = 0;
+                $.each($("#userPermissions").find('span'), function(){
+                  if(userPermission[index] !== null){
+                    this.classList.add(...userPermission[index]);
                   }
-                })
+                  index++;
+                });
+
+                var recipePermissions = getPermissions(userInfo.recipe_permission)
+                index = 0;
+                $.each($("#userRecipes").find('span'), function(){
+                  if(recipePermissions[index] !== null){
+                    this.classList.add(...recipePermissions[index]);
+                  }
+                  index++;
+                });
+
+                var photoPermissions = getPermissions(userInfo.photo_permission)
+                console.log(photoPermissions)
+                index = 0;
+                $.each($("#userPhotos").find('span'), function(){
+                  if(photoPermissions[index] !== null){
+                    this.classList.add(...photoPermissions[index]);
+                  }
+                  index++;
+                });
+                
+
+                $('#userInfo').show(500);
 
               })
 
@@ -365,6 +387,26 @@
 
       })
     });
+
+    var RWD  = {
+      'R' : 0, 
+      'W' : 1, 
+      "D" : 2
+    }
+    function getPermissions(dbPermission) {
+      //['R', 'W', 'D']
+      var access = [null, null, null];
+      for(var i = 0; i < 3; i++){
+        if(typeof dbPermission[i] !== 'undefined'){
+          access[RWD[dbPermission[i]]] = ["fa", "fa-check", "text-primary"];
+        }
+        else{
+          access[i] = ["fa", "fa-times", "text-light"];
+        }
+      }
+
+      return access;
+    }
   </script>
 
   </html>

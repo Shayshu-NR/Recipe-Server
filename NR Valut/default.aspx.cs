@@ -24,7 +24,7 @@ namespace NR_Valut
         {
             string query = Constants.Query.LoginQuery(username, password);
             DBConnect db = new DBConnect();
-            List<string> wantedFields = new List<string>(new[] { "id", "username", "password", "datecreated", "lastlogin", "user_type", "user_permision", "recipe_permision", "photo_permision", "email", "verified", "birthday", "language", "phone_number" });
+            List<string> wantedFields = new List<string>(new[] { "id", "username", "password", "datecreated", "lastlogin", "user_type", "user_permission", "recipe_permission", "photo_permission", "email", "verified", "birthday", "language", "phone_number" });
             int size = wantedFields.Count();
             List<string>[] dbResp = db.Select(query, size, wantedFields);
             try
@@ -292,9 +292,9 @@ namespace NR_Valut
             public string datecreated { get; set; }
             public string lastlogin { get; set; }
             public string user_type { get; set; }
-            public string user_permision { get; set; }
-            public string recipe_permision { get; set; }
-            public string photo_permision { get; set; }
+            public string user_permission { get; set; }
+            public string recipe_permission { get; set; }
+            public string photo_permission { get; set; }
             public string email { get; set; }
             public string verified { get; set; }
             public string birthday { get; set; }
