@@ -252,14 +252,6 @@
                   <td>Birthday:</td>
                   <td id="birthday"></td>
                 </tr>
-                <tr>
-                  <td>Country:</td>
-                  <td id="country"></td>
-                </tr>
-                <tr>
-                  <td>Languages:</td>
-                  <td id="language"></td>
-                </tr>
               </tbody>
             </table>
 
@@ -326,6 +318,7 @@
           contentType: "application/json; charset=utf-8",
           success: function (data) {
             var recvData = JSON.parse(data.d);
+            console.log(recvData);
 
             if (recvData.Success != 'undefined') {
               // Show alert and remove login screen
@@ -334,11 +327,17 @@
                 $(".toast-body").html("Login Sucessful")
                 $("#loginStatus").toast('show')
 
-                var userInfo  = recvData.Info;
+                var userInfo  = recvData.Info[0];
                 $('#registerDate').text(userInfo.datecreated);
                 $('#lastActive').text(userInfo.lastlogin);
                 $('#verified').text(userInfo.verified);
                 $('#userRole').text(userInfo.user_type);
+                $('#birthday').text(userInfo.birthday);
+                $('#phone').text(userInfo.phone_number);
+                $('#Email').text(userInfo.phone_number);
+                $('#infoName').text(userInfo.name);
+                $('#userName').text(userInfo.username);
+                $("#userID").text("ID: " + userInfo.id);
 
                 var userPermission = getPermissions(userInfo.user_permission);
                 var index = 0;
@@ -368,6 +367,7 @@
                   index++;
                 });
                 
+               
 
                 $('#userInfo').show(500);
 

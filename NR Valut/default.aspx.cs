@@ -8,6 +8,9 @@ using System.Web.UI.WebControls;
 using MySql.Data.MySqlClient;
 using System.Text.Json;
 using Constants;
+using Newtonsoft;
+using System.Data;
+using Newtonsoft.Json;
 
 namespace NR_Valut
 {
@@ -16,7 +19,7 @@ namespace NR_Valut
         protected void Page_Load(object sender, EventArgs e)
         {
 
-           
+
         }
 
         [WebMethod]
@@ -24,14 +27,29 @@ namespace NR_Valut
         {
             string query = Constants.Query.LoginQuery(username, password);
             DBConnect db = new DBConnect();
-            List<string> wantedFields = new List<string>(new[] { "id", "username", "password", "datecreated", "lastlogin", "user_type", "user_permission", "recipe_permission", "photo_permission", "email", "verified", "birthday", "language", "phone_number" });
+            List<string> wantedFields = new List<string>(new[] {
+                "id",
+                "name",
+                "username",
+                "password",
+                "datecreated",
+                "lastlogin",
+                "user_type",
+                "user_permission",
+                "recipe_permission",
+                "photo_permission",
+                "email",
+                "verified",
+                "birthday",
+                "language",
+                "phone_number"
+            });
             int size = wantedFields.Count();
-            List<string>[] dbResp = db.Select(query, size, wantedFields);
+            DataTable dbResp = db.Select(query);
             try
             {
-                string respUsername = dbResp[1][0];
-                string respPassword = dbResp[2][0];
-                string respType = dbResp[5][0];
+                string respUsername = dbResp.Rows[0]["username"].ToString();
+                string respPassword = dbResp.Rows[0]["password"].ToString();
 
                 // If no exception is caught then the user logged in sucessfully...
                 // Make sure to set cookies for later...
@@ -59,10 +77,8 @@ namespace NR_Valut
                 }
 
                 // Send back profile information
-                List<string> goodToSend = dbResp.Select(s => s[0]).ToList();
-                goodToSend.RemoveAt(2);
-                userInfo details = new userInfo(goodToSend);
-                string jsonResponse = JsonSerializer.Serialize(details);
+                dbResp.Columns.Remove("password");
+                string jsonResponse = JsonConvert.SerializeObject(dbResp);
 
                 //Update the last login date...
                 if (db.Update(
@@ -70,8 +86,8 @@ namespace NR_Valut
                     new List<string>(new[] { "lastlogin" }),
                     new List<string>(new[] { DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") }),
                     new List<string>(new[] { "id" }),
-                    new List<string>(new[] { details.id }),
-                    new List<string>(new[] { "" })
+                    new List<string>(new[] { "'" + dbResp.Rows[0]["id"].ToString() + "'"}),
+                    new List<string>(new[] { "=" })
                 ))
                 {
 
@@ -207,7 +223,7 @@ namespace NR_Valut
                         var i = 0;
                         foreach (var data in whereData)
                         {
-                            query += data.whereCol + " = '" + data.whereVal + "'" + whereOp[i] + " ";
+                            query += data.whereCol + whereOp[i] + " " + data.whereVal + " ";
                             i++;
                         }
 
@@ -231,36 +247,18 @@ namespace NR_Valut
 
             }
 
-            public List<string>[] Select(string query, int rowSize, List<string> requestedInfo)
+            public DataTable Select(string query)
             {
                 try
                 {
-                    if (this.OpenConnection() || rowSize != requestedInfo.Count)
+                    if (this.OpenConnection())
                     {
                         MySqlCommand cmd = new MySqlCommand(query, connect);
 
                         MySqlDataReader dataReader = cmd.ExecuteReader();
 
-                        List<string>[] data = new List<string>[rowSize];
-
-                        /*
-                         data = [[id], [name] ... [rowSize]]
-                         */
-                        for (int i = 0; i < rowSize; i++)
-                        {
-                            data[i] = new List<string>();
-                        }
-
-                        // Store all the info
-                        while (dataReader.Read())
-                        {
-                            for (int i = 0; i < rowSize; i++)
-                            {
-
-                                data[i].Add(dataReader[requestedInfo[i]] + "");
-
-                            }
-                        }
+                        DataTable data = new DataTable();
+                        data.Load(dataReader);
 
                         dataReader.Close();
                         this.CloseConnection();
@@ -270,12 +268,12 @@ namespace NR_Valut
                     else
                     {
                         //Failed to connect to server
-                        return new List<string>[0];
+                        return new DataTable();
                     }
                 }
                 catch (MySqlException e)
                 {
-                    return new List<string>[0];
+                    return new DataTable();
                 }
             }
 
@@ -288,6 +286,7 @@ namespace NR_Valut
         class userInfo
         {
             public string id { get; set; }
+            public string name { get; set; }
             public string username { get; set; }
             public string datecreated { get; set; }
             public string lastlogin { get; set; }
