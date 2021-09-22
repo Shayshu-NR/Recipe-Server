@@ -11,6 +11,8 @@ using Constants;
 using Newtonsoft;
 using System.Data;
 using Newtonsoft.Json;
+using HashLib;
+using System.Text;
 
 namespace NR_Valut
 {
@@ -18,7 +20,74 @@ namespace NR_Valut
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            DBConnect db = new DBConnect();
 
+            if(Request.Cookies["password"] != null && Request.Cookies["userName"] != null && Request.Cookies["loggedIn"] != null)
+            {
+                try
+                {
+                    bool res = db.CheckLogin(Request.Cookies["password"].Value, Request.Cookies["userName"].Value);
+                    switch (res)
+                    {
+                        case true:
+                            return;
+
+                        default:
+                            loginContainer.InnerHtml = @"
+                            <div class='row justify-content-center align-items-center'>
+                                    <form class='col-md-5 card p-3' id='login'>
+                                        <h1 class='h3 mb-3 font-weight-normal'>
+                                        Login
+                                        </h1>
+
+                                        <input type = 'username' class='form-control' placeholder='Username' id='username' required='' autofocus=''>
+
+                                        <br>
+                                        <div class='input-group'>
+                                        <input type = 'password' class='form-control current-password' placeholder='Password' id='password'
+                                            required=''>
+                                        <span class='input-group-btn'>
+                                            <button class='form-control reveal' type='button'>
+                                            <i class='fa fa-eye' aria-hidden='true'></i>
+                                            </button>
+                                        </span>
+                                        </div>
+                                        <br>
+                                        <button class='btn btn-lg btn-primary btn-block' type='submit'>Sign in</button>
+                                    </form>
+                            </div>";
+                            return;
+                    }
+                }
+                catch
+                {
+                    return;
+                }
+            }
+
+            loginContainer.InnerHtml = @"
+                            <div class='row justify-content-center align-items-center'>
+                                    <form class='col-md-5 card p-3' id='login'>
+                                        <h1 class='h3 mb-3 font-weight-normal'>
+                                        Login
+                                        </h1>
+
+                                        <input type = 'username' class='form-control' placeholder='Username' id='username' required='' autofocus=''>
+
+                                        <br>
+                                        <div class='input-group'>
+                                        <input type = 'password' class='form-control current-password' placeholder='Password' id='password'
+                                            required=''>
+                                        <span class='input-group-btn'>
+                                            <button class='form-control reveal' type='button'>
+                                            <i class='fa fa-eye' aria-hidden='true'></i>
+                                            </button>
+                                        </span>
+                                        </div>
+                                        <br>
+                                        <button class='btn btn-lg btn-primary btn-block' type='submit'>Sign in</button>
+                                    </form>
+                            </div>";
 
         }
 
@@ -27,25 +96,8 @@ namespace NR_Valut
         {
             string query = Constants.Query.LoginQuery(username, password);
             DBConnect db = new DBConnect();
-            List<string> wantedFields = new List<string>(new[] {
-                "id",
-                "name",
-                "username",
-                "password",
-                "datecreated",
-                "lastlogin",
-                "user_type",
-                "user_permission",
-                "recipe_permission",
-                "photo_permission",
-                "email",
-                "verified",
-                "birthday",
-                "language",
-                "phone_number"
-            });
-            int size = wantedFields.Count();
             DataTable dbResp = db.Select(query);
+
             try
             {
                 string respUsername = dbResp.Rows[0]["username"].ToString();
@@ -54,6 +106,21 @@ namespace NR_Valut
                 // If no exception is caught then the user logged in sucessfully...
                 // Make sure to set cookies for later...
                 var response = HttpContext.Current.Response;
+                IHash hash = HashFactory.Crypto.CreateMD5();
+                var expectedVal = hash.ComputeString(respUsername + respPassword, Encoding.ASCII);
+                db.Update(Constants.Query.UpdateHash(respUsername, respPassword, expectedVal.ToString()));
+
+                if (response.Cookies["password"] != null)
+                {
+                    response.Cookies["password"].Value = expectedVal.ToString();
+                }
+                else
+                {
+                    var passCookie = new HttpCookie("password");
+                    passCookie.Value = expectedVal.ToString();
+                    response.Cookies.Add(passCookie);
+                }
+
                 if (response.Cookies["userName"] != null)
                 {
                     response.Cookies["userName"].Value = respUsername;
@@ -88,7 +155,7 @@ namespace NR_Valut
                     new List<string>(new[] { "id" }),
                     new List<string>(new[] { "'" + dbResp.Rows[0]["id"].ToString() + "'"}),
                     new List<string>(new[] { "=" })
-                ))
+                ) > 0)
                 {
 
                     return "{\"Success\" : \"Login sucessful\", \"Info\" : " + jsonResponse + "}";
@@ -201,7 +268,7 @@ namespace NR_Valut
                 }
             }
 
-            public bool Update(string table, List<string> columns, List<string> values, List<string> whereCol, List<string> whereVal, List<string> whereOp)
+            public int Update(string table, List<string> columns, List<string> values, List<string> whereCol, List<string> whereVal, List<string> whereOp)
             {
                 try
                 {
@@ -228,17 +295,40 @@ namespace NR_Valut
                         }
 
                         MySqlCommand cmd = new MySqlCommand(query, connect);
-                        cmd.ExecuteNonQuery();
+                        int res = cmd.ExecuteNonQuery();
                         this.CloseConnection();
 
-                        return true;
+                        return res;
                     }
 
-                    return false;
+                    return 0;
                 }
                 catch (MySqlException e)
                 {
-                    return false;
+                    return 0;
+                }
+            }
+
+            public int Update(string query)
+            {
+                try
+                {
+                    if (this.OpenConnection())
+                    {
+                        MySqlCommand cmd = new MySqlCommand(query, connect);
+                        int res = cmd.ExecuteNonQuery();
+                        this.CloseConnection();
+
+                        return res;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return 0;
                 }
             }
 
@@ -277,43 +367,25 @@ namespace NR_Valut
                 }
             }
 
-            public int Count()
+            public int Count(string query)
             {
+                DataTable colCount = Select(query);
+
+                if(colCount.Rows.Count > 0)
+                {
+                    return  Int32.Parse(colCount.Rows[0].ItemArray[0].ToString());
+                }
+
                 return 0;
             }
-        }
 
-        class userInfo
-        {
-            public string id { get; set; }
-            public string name { get; set; }
-            public string username { get; set; }
-            public string datecreated { get; set; }
-            public string lastlogin { get; set; }
-            public string user_type { get; set; }
-            public string user_permission { get; set; }
-            public string recipe_permission { get; set; }
-            public string photo_permission { get; set; }
-            public string email { get; set; }
-            public string verified { get; set; }
-            public string birthday { get; set; }
-            public string language { get; set; }
-            public string phone_number { get; set; }
-
-            public userInfo(List<string> values)
+            public bool CheckLogin(string hashVal, string username)
             {
-                var vProperties = GetType().GetProperties();
-                int i = 0;
-                foreach (var props in vProperties)
-                {
-                    if (props.CanWrite
-                     && props.PropertyType.IsPublic
-                     && props.PropertyType == typeof(String))
-                    {
-                        props.SetValue(this, values[i], null);
-                    }
-                    i++;
-                }
+                string query = "SELECT COUNT(*) AS FoundUsers FROM Users WHERE hash = '" + hashVal + "' AND username = '" + username + "'";
+
+                HttpContext.Current.Response.Write(query);
+
+                return Count(query) == 1;
             }
         }
     }

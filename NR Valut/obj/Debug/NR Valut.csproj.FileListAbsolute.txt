@@ -86,3 +86,4 @@ D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\Renci.SshNet.dll
 D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\K4os.Compression.LZ4.dll
 D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\K4os.Hash.xxHash.dll
 D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\MySql.Data.xml
+D:\javascript_projects\Recipe\Recipe-Server\NR Valut\bin\HashLib.dll

@@ -33,6 +33,14 @@ namespace Constants
                 ON U.id = UI.iduser_info
                 WHERE U.username= '" + username + "' AND U.password='" + password + "'";
         }
+
+        public static string UpdateHash(string username, string password, string hash)
+        {
+            return @"
+                UPDATE Users 
+                Set hash = '" + hash + @"' 
+                WHERE username= '" + username + "' AND password='" + password + "'";
+        }
     }
 }
 

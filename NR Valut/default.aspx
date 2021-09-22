@@ -127,29 +127,8 @@
     <br><br>
 
 
-    <div class="container text-center form-group">
-      <div class="row justify-content-center align-items-center">
-        <form class="col-md-5 card p-3" id="login">
-          <h1 class="h3 mb-3 font-weight-normal">
-            Login
-          </h1>
-
-          <input type="username" class="form-control" placeholder="Username" id="username" required="" autofocus="">
-
-          <br>
-          <div class="input-group">
-            <input type="password" class="form-control current-password" placeholder="Password" id="password"
-              required="">
-            <span class="input-group-btn">
-              <button class="form-control reveal" type="button">
-                <i class="fa fa-eye" aria-hidden="true"></i>
-              </button>
-            </span>
-          </div>
-          <br>
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        </form>
-      </div>
+    <div class="container text-center form-group" runat="server" id="loginContainer">
+      
     </div>
 
     <div id="userInfo" style="display: none;">
@@ -157,9 +136,7 @@
         <div class="media align-items-center py-3 mb-3">
           <div class="media-body ml-4">
             <h4 class="font-weight-bold mb-0" id="name"></h4>
-            <div class="text-muted mb-2" id="userID">ID:</div>
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm">Edit</a>&nbsp;
-            <a href="javascript:void(0)" class="btn btn-default btn-sm">Profile</a>&nbsp;
+            <button class="btn btn-primary btn-sm">Edit Profile</button>&nbsp;
           </div>
         </div>
 
@@ -167,6 +144,10 @@
           <div class="card-body">
             <table class="table user-view-table m-0">
               <tbody>
+                  <tr>
+                  <td>ID:</td>
+                  <td id="userID"></td>
+                </tr>
                 <tr>
                   <td>Registered:</td>
                   <td id="registerDate"></td>
