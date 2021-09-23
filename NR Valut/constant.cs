@@ -7,7 +7,7 @@ namespace Constants
 {
     public class Query
     {
-        public static string LoginQuery(string username, string password)
+        public static string LoginQuery(string username, string password, bool hash = false)
         {
             return @"
                 SELECT 
@@ -31,7 +31,7 @@ namespace Constants
                 ON U.type = UT.typeid 
                 LEFT JOIN  user_info UI 
                 ON U.id = UI.iduser_info
-                WHERE U.username= '" + username + "' AND U.password='" + password + "'";
+                WHERE U.username= '" + username + "' AND " + (hash ? "U.hash" : "U.password") + "='" + password + "'";
         }
 
         public static string UpdateHash(string username, string password, string hash)

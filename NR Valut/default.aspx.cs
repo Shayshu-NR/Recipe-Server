@@ -7,7 +7,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using MySql.Data.MySqlClient;
 using System.Text.Json;
-using Constants;
 using Newtonsoft;
 using System.Data;
 using Newtonsoft.Json;
@@ -18,6 +17,7 @@ namespace NR_Valut
 {
     public partial class _default : System.Web.UI.Page
     {
+
         protected void Page_Load(object sender, EventArgs e)
         {
             DBConnect db = new DBConnect();
@@ -30,6 +30,31 @@ namespace NR_Valut
                     switch (res)
                     {
                         case true:
+                            DataTable userInfo = AutoLogin(Request.Cookies["userName"].Value, Request.Cookies["password"].Value);
+
+                            try
+                            {
+                                userID.InnerHtml = userInfo.Rows[0]["id"].ToString();
+                                registerDate.InnerHtml = userInfo.Rows[0]["datecreated"].ToString();
+                                lastActive.InnerHtml = userInfo.Rows[0]["lastlogin"].ToString();
+                                userRole.InnerHtml = userInfo.Rows[0]["user_type"].ToString();
+                                birthday.InnerHtml = userInfo.Rows[0]["birthday"].ToString();
+                                phone.InnerHtml = userInfo.Rows[0]["phone_number"].ToString();
+                                Email.InnerHtml = userInfo.Rows[0]["email"].ToString();
+                                infoName.InnerHtml = userInfo.Rows[0]["name"].ToString();
+                                userName.InnerHtml = userInfo.Rows[0]["username"].ToString();
+                                verifiedCheck.InnerHtml = userInfo.Rows[0]["verified"].ToString();
+
+                                userPermissions.InnerHtml = getPermissionDiv(userInfo.Rows[0]["user_permission"].ToString(), "Users");
+                                userRecipes.InnerHtml = getPermissionDiv(userInfo.Rows[0]["recipe_permission"].ToString(), "Recipes");
+                                userPhotos.InnerHtml = getPermissionDiv(userInfo.Rows[0]["photo_permission"].ToString(), "Photos");
+                            }
+                            catch(Exception ex)
+                            {
+                                Response.Write(ex.Message);
+                                return;
+                            }
+
                             return;
 
                         default:
@@ -94,7 +119,9 @@ namespace NR_Valut
         [WebMethod]
         public static string Login(string username, string password)
         {
-            string query = Constants.Query.LoginQuery(username, password);
+            Query dbQuery = new Query();
+
+            string query = dbQuery.LoginQuery(username, password);
             DBConnect db = new DBConnect();
             DataTable dbResp = db.Select(query);
 
@@ -108,7 +135,7 @@ namespace NR_Valut
                 var response = HttpContext.Current.Response;
                 IHash hash = HashFactory.Crypto.CreateMD5();
                 var expectedVal = hash.ComputeString(respUsername + respPassword, Encoding.ASCII);
-                db.Update(Constants.Query.UpdateHash(respUsername, respPassword, expectedVal.ToString()));
+                db.Update(dbQuery.UpdateHash(respUsername, respPassword, expectedVal.ToString()));
 
                 if (response.Cookies["password"] != null)
                 {
@@ -383,10 +410,90 @@ namespace NR_Valut
             {
                 string query = "SELECT COUNT(*) AS FoundUsers FROM Users WHERE hash = '" + hashVal + "' AND username = '" + username + "'";
 
-                HttpContext.Current.Response.Write(query);
-
                 return Count(query) == 1;
             }
+        }
+
+        public DataTable AutoLogin(string username, string password)
+        {
+            Query dbQuery = new Query();
+
+            string query = dbQuery.LoginQuery(username, password, true);
+            DBConnect db = new DBConnect();
+            DataTable dbResp = db.Select(query);
+
+            return dbResp;
+        }
+
+        class Query
+        {
+            public string LoginQuery(string username, string password, bool hash = false)
+            {
+                return @"
+                SELECT 
+                    id, 
+                    username,
+                    name,
+                    password, 
+                    datecreated, 
+                    lastlogin, 
+                    user_type, 
+                    user_permission, 
+                    recipe_permission, 
+                    photo_permission,
+                    email, 
+                    verified, 
+                    birthday, 
+                    language, 
+                    phone_number 
+                FROM  users U 
+                LEFT JOIN  user_types UT 
+                ON U.type = UT.typeid 
+                LEFT JOIN  user_info UI 
+                ON U.id = UI.iduser_info
+                WHERE U.username= '" + username + "' AND " + (hash ? "U.hash" : "U.password") + "='" + password + "'";
+            }
+
+            public string UpdateHash(string username, string password, string hash)
+            {
+                return @"
+                UPDATE Users 
+                Set hash = '" + hash + @"' 
+                WHERE username= '" + username + "' AND password='" + password + "'";
+            }
+        }
+
+        public string getPermissionDiv(string permission, string sectionName)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<td>" + sectionName + "</td>");
+
+            char[] RWDPermissions = permission.ToCharArray();
+            Dictionary<string, string> div =  new Dictionary<string, string>()
+                {
+                    {"R", "<td><span class=''></span></td>" },
+                    {"W", "<td><span class=''></span></td>" },
+                    {"D", "<td><span class=''></span></td>" }
+                };
+
+            foreach(char c in RWDPermissions)
+            {
+                try
+                {
+                    div[c.ToString()] = "<td><span class='fa fa-check text-primary'></span></td>";
+                }
+                catch
+                {
+                    
+                }
+            }
+            
+            foreach(KeyValuePair<string, string> entry in div)
+            {
+                sb.Append(entry.Value);
+            }
+
+            return sb.ToString();
         }
     }
 }
