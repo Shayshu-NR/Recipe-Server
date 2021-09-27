@@ -165,7 +165,7 @@
                             </tr>
                             <tr>
                                 <td>Status:</td>
-                                <td><span class="badge badge-outline-success">Active</span></td>
+                                <td><span class="badge bg-success">Active</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -201,7 +201,7 @@
                             </tr>
                             <tr id="userPhotosClient">
                                 <div id="userPhotos" runat="server">
-                                    <td>Photos</td>Client
+                                    <td>Photos</td>
                                     <td><span class=""></span></td>
                                     <td><span class=""></span></td>
                                     <td><span class=""></span></td>
@@ -312,9 +312,9 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     var recvData = JSON.parse(data.d);
-                    console.log(recvData);
+                    console.log(recvData.Success);
 
-                    if (recvData.Success != 'undefined') {
+                    if (typeof recvData.Success != 'undefined') {
                         // Show alert and remove login screen
                         $("#login").animate({ borderColor: "green" }, 500, "swing").delay(100).animate({ borderColor: "rgba(0,0,0,0.125)" }, 500, "swing", function () {
                             $("#login").slideUp(500)

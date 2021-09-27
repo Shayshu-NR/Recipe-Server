@@ -1,0 +1,10 @@
+
+Log Entry : September 26, 2021
+  :
+INSERT INTO recipe_layouts (layout_structure, layout_name, layout_lastmodified) VALUES ('Test Layout', '[{"type":"header","subtype":"h1","label":"Header","access":false}]', '2021-09-26 11:32:57')
+-------------------------------
+
+Log Entry : September 26, 2021
+  :
+INSERT INTO recipe_layouts (layout_structure, layout_name, layout_lastmodified) VALUES ('Test Layout', '[{"type":"header","subtype":"h1","label":"Header","access":false}]', '2021-09-26 11:41:07')
+-------------------------------

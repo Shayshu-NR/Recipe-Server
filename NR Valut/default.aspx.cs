@@ -43,7 +43,7 @@ namespace NR_Valut
                                 Email.InnerHtml = userInfo.Rows[0]["email"].ToString();
                                 infoName.InnerHtml = userInfo.Rows[0]["name"].ToString();
                                 userName.InnerHtml = userInfo.Rows[0]["username"].ToString();
-                                verifiedCheck.InnerHtml = userInfo.Rows[0]["verified"].ToString();
+                                verifiedCheck.InnerHtml = "<span class='badge bg-" + (userInfo.Rows[0]["verified"].ToString().Length > 0 ? "success'><i class='fas fa-check'></i>": "danger'><i class='fas fa-times'></i>") + "</span>";
 
                                 userPermissions.InnerHtml = getPermissionDiv(userInfo.Rows[0]["user_permission"].ToString(), "Users");
                                 userRecipes.InnerHtml = getPermissionDiv(userInfo.Rows[0]["recipe_permission"].ToString(), "Recipes");
@@ -191,7 +191,7 @@ namespace NR_Valut
                 return "{\"Error\" : \"Login failed\"}";
 
             }
-            catch (ArgumentOutOfRangeException excp)
+            catch (Exception e)
             {
                 var response = HttpContext.Current.Response;
                 if (response.Cookies["userName"] != null)

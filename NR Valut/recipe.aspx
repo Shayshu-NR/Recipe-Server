@@ -33,9 +33,9 @@
 
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-formBuilder/3.7.2/form-builder.min.js" integrity="sha512-qy8cWnyo8rrk1KrntbQJMFuyvFy4F8ccZrBVKedX84VFyeq0IPZZXkx+cpFPvQ6zTate/l02ILa0OnjkRlK76A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-formBuilder/3.7.2/form-render.min.js" integrity="sha512-Dxm3yhPE+u1tqRfs9na7yB9hTNAifhzKJO9poSgpXoUBMaXIU/9nZ5/moHxA+HHBGxvnQFEdc02QJd4mL/NIPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-formBuilder/3.7.2/form-builder.min.js"
+            integrity="sha512-qy8cWnyo8rrk1KrntbQJMFuyvFy4F8ccZrBVKedX84VFyeq0IPZZXkx+cpFPvQ6zTate/l02ILa0OnjkRlK76A=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
         <script src="https://kit.fontawesome.com/ea86fc6cea.js" crossorigin="anonymous"></script>
 
@@ -60,83 +60,91 @@
         .select2-selection__arrow {
             height: 52px !important;
         }
+
+        .form-rendered #build-wrap {
+            display: none;
+        }
+
+        .render-wrap {
+            display: none;
+        }
+
+        .form-rendered .render-wrap {
+            display: block;
+        }
+
+        #edit-form {
+            display: none;
+            float: right;
+        }
+
+        .form-rendered #edit-form {
+            display: block;
+        }
     </style>
     <br>
 
     <body>
+
         <div class="container">
-            <ul id="draggablePanelList" class="list-group list-group-flush">
-                <li class="list-group-item input-group mb-3">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend drag-panel">
-                            <span class="input-group-text">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                                    class="bi bi-grip-vertical" viewBox="0 0 16 16">
-                                    <path
-                                        d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                </svg>
-                            </span>
-                        </div>
-                        <textarea class="form-control" rows="1" placeholder="Paragraph..."
-                            aria-label="Username"></textarea>
+            <div>
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <a class="navbar-brand" href="#">NR Home</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="vault.aspx">Vault</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="recipe.aspx">Recipe Archive</a>
+                                    <a class="dropdown-item" href="photo.aspx">Photo Archive</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="admin.aspx">Admin</a>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend drag-panel">
-                            <span class="input-group-text">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="34" fill="currentColor"
-                                    class="bi bi-grip-vertical" viewBox="0 0 16 16">
-                                    <path
-                                        d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                </svg>
-                            </span>
+                    <form class="navbar-form navbar-left">
+                        <div class="row">
+                            <div class="col-auto">
+
+                                <button class="btn btn-outline-success" type="submit">Search</button>
+                            </div>
+                            <div class="col">
+
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                                    aria-label="Search">
+                            </div>
                         </div>
-                        <input class="form-control form-control-lg" style="font-weight: bold;"
-                            placeholder="Header..." />
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend drag-panel">
-                            <span class="input-group-text">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="34" fill="currentColor"
-                                    class="bi bi-grip-vertical" viewBox="0 0 16 16">
-                                    <path
-                                        d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                </svg>
-                            </span>
-                        </div>
-                        <input class="form-control" placeholder="Ingredient" />
-                        <div class="col-xs-2">
-                            <select class="form-select select2-units" aria-label="select example"
-                                style="height: 50px !important;">
-                                <option selected value="">Unit</option>
-                                <option value="1">Cup</option>
-                                <option value="2">Teaspoon</option>
-                                <option value="3">Tablespoon</option>
-                                <option value="3">Fluid Ounce</option>
-                                <option value="3">Millimeter </option>
-                                <option value="3">Liter</option>
-                                <option value="3">Pound</option>
-                                <option value="3">Milligram</option>
-                                <option value="3">Gram</option>
-                                <option value="3">Killogram</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-2">
-                            <input class="form-control" placeholder="Quantity" />
-                        </div>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="drag-panel">You can drag this panel too.</div>
-                    <div class="panel-body">Another content panel here...</div>
-                </li>
-            </ul>
+                    </form>
+                </nav>
+            </div>
+        </div>
+        <br />
+        <div class="container">
+            <h2>Recipe Layout Builder</h2>
+            <input placeholder="Layout Name..." type="text" class="form-control" name="layout_name" id="layout_name"
+                required>
+        </div>
+        <br>
+        <div class="container">
+            <div id="build-wrap"></div>
+            <div class="render-wrap"></div>
         </div>
 
-        <button type="button" class="btn btn-primary" name="add" id="addItem">test</button>
 
     </body>
 
@@ -145,51 +153,47 @@
 
 
     <script>
-        jQuery(function ($) {
-            var panelList = $('#draggablePanelList');
 
-            panelList.sortable({
-                // Only make the .panel-heading child elements support dragging.
-                // Omit this to make then entire <li>...</li> draggable.
-                handle: '.drag-panel',
-                update: function () {
-                    $('.panel', panelList).each(function (index, elem) {
-                        var $listItem = $(elem),
-                            newIndex = $listItem.index();
 
-                        // Persist the new indices.
-                    });
+        jQuery($ => {
+            const fbEditor = document.getElementById('build-wrap');
+
+            var options = {
+                onSave: function (evt, formData) {
+                    console.log(typeof formData);
+
+                    // Check if the layout name is filled in...
+                    if ($("#layout_name").val().length > 0) {
+                        var layoutData = {
+                            "name": $("#layout_name").val(),
+                            "structure": formData
+                        }
+
+                        console.log(JSON.stringify(layoutData));
+
+                        $.ajax({
+                            type: "POST",
+                            url: "recipe.aspx/NewRecipeLayout",
+                            data: JSON.stringify(layoutData),
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (data) { 
+                                console.log(data.d);
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                            } 
+                        })
+                    }
+                    else {
+                        console.log("Need a layout name")
+                    }
                 }
-            });
+            };
+
+            const formBuilder = $(fbEditor).formBuilder(options)
+
         });
 
-        jQuery(function ($) {
-            var panelList2 = $('#draggablePanelList2');
 
-            panelList2.sortable({
-                // Only make the .panel-heading child elements support dragging.
-                // Omit this to make then entire <li>...</li> draggable.
-                handle: '.panel-heading',
-                update: function () {
-                    $('.panel', panelList2).each(function (index, elem) {
-                        var $listItem = $(elem),
-                            newIndex = $listItem.index();
-
-                        // Persist the new indices.
-                    });
-                }
-            });
-        });
-        $(document).ready(function () {
-            $("#addItem").click(function () {
-                // Add a child element 
-                $("#draggablePanelList").append('<li class="list-group-item">\
-                    <div class="drag-panel">You can drag this panel too.</div>\
-                    <div class="panel-body">Another content panel here...</div>\
-                </li>')
-            })
-
-            $('.select2-units').select2();
-
-        })
     </script>
