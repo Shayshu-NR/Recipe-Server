@@ -8,3 +8,13 @@ Log Entry : September 26, 2021
   :
 INSERT INTO recipe_layouts (layout_structure, layout_name, layout_lastmodified) VALUES ('Test Layout', '[{"type":"header","subtype":"h1","label":"Header","access":false}]', '2021-09-26 11:41:07')
 -------------------------------
+
+Log Entry : October 21, 2021
+  :
+INSERT INTO recipe_layouts (layout_structure, layout_name, layout_lastmodified) VALUES ('Default Recipe Layout', '[{"type":"header","subtype":"h1","label":"Recipe Name","access":false},{"type":"paragraph","subtype":"p","label":"Recipe Description","access":false},{"type":"checkbox-group","required":false,"label":"Ingredients","toggle":false,"inline":false,"name":"checkbox-group-1634869946198-0","access":false,"other":false,"values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"paragraph","subtype":"p","label":"Instructions","access":false},{"type":"starRating","required":false,"label":"Star Rating","name":"starRating-1634870009816-0","access":false}]', '2021-10-21 10:33:49')
+-------------------------------
+
+Log Entry : October 21, 2021
+  :
+INSERT INTO recipe_layouts (layout_structure, layout_name, layout_lastmodified) VALUES ('Default Recipe Layout', '[{"type":"header","subtype":"h1","label":"Recipe Name","access":false},{"type":"paragraph","subtype":"p","label":"Recipe Description","access":false},{"type":"checkbox-group","required":false,"label":"Ingredients","toggle":false,"inline":false,"name":"checkbox-group-1634869946198-0","access":false,"other":false,"values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"paragraph","subtype":"p","label":"Instructions","access":false},{"type":"starRating","required":false,"label":"Star Rating","name":"starRating-1634870009816-0","access":false}]', '2021-10-21 10:35:06')
+-------------------------------

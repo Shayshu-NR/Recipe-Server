@@ -106,6 +106,8 @@
     <Content Include="admin.aspx" />
     <Content Include="default.aspx" />
     <Content Include="email.aspx" />
+    <Content Include="JS\form-builder.min.js" />
+    <Content Include="JS\form-render.min.js" />
     <Content Include="photo.aspx" />
     <Content Include="recipe.aspx" />
     <Content Include="vault.aspx" />
@@ -158,6 +160,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="JS\form-builder.min.js.gz" />
+    <Content Include="JS\form-render.min.js.gz" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">

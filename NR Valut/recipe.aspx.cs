@@ -27,7 +27,7 @@ namespace NR_Valut
         public static string NewRecipeLayout(string name, string structure)
         {
             DBConnect query = new DBConnect();
-            string cmd = "INSERT INTO recipe_layouts (layout_structure, layout_name, layout_lastmodified) VALUES ('" + name + "', '" + structure + "', '" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')";
+            string cmd = "INSERT INTO recipe_layouts (layout_name, layout_structure, layout_lastmodified) VALUES ('" + name + "', '" + structure + "', '" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')";
             int res = query.Insert(cmd);
 
             using (StreamWriter w = File.AppendText(HttpContext.Current.Server.MapPath("log.txt")))
@@ -251,6 +251,32 @@ namespace NR_Valut
 
                 return Count(query) == 1;
             }
+        }
+
+
+        class recipeLayout
+        {
+            List<recipeComponents> components { get; set; }
+        }
+
+        class recipeComponents
+        {
+            string type { get; set; }
+            string subtype { get; set; }
+            string label { get; set; }
+            string name { get; set; }
+            bool access { get; set; }
+            bool required { get; set; }
+            bool inline { get; set; }
+            bool toggle { get; set; }
+            List<checkboxValues> values { get; set; }
+        }
+
+        class checkboxValues
+        {
+            string label { get; set; }
+            string value { get; set; }
+            bool selected { get; set; }
         }
 
     }
