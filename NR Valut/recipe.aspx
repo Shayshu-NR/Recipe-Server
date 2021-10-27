@@ -113,7 +113,7 @@
                                 aria-haspopup="true" aria-expanded="false">Other
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="recipearchive.aspx">New Recipe</a>
+                                <a class="dropdown-item" href="newrecipe.aspx">New Recipe</a>
                                 <a class="dropdown-item" href="photo.aspx">Photo Archive</a>
                                 <a class="dropdown-item" href="recipe.aspx">Recipe Layout Builder</a>
                                 <div class="dropdown-divider"></div>

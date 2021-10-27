@@ -226,6 +226,88 @@ namespace NR_Valut
             return "";
         }
 
+        public DataTable AutoLogin(string username, string password)
+        {
+            Query dbQuery = new Query();
+
+            string query = dbQuery.LoginQuery(username, password, true);
+            DBConnect db = new DBConnect();
+            DataTable dbResp = db.Select(query);
+
+            return dbResp;
+        }
+
+        class Query
+        {
+            public string LoginQuery(string username, string password, bool hash = false)
+            {
+                return @"
+                SELECT 
+                    id, 
+                    username,
+                    name,
+                    password, 
+                    datecreated, 
+                    lastlogin, 
+                    user_type, 
+                    user_permission, 
+                    recipe_permission, 
+                    photo_permission,
+                    email, 
+                    verified, 
+                    birthday, 
+                    language, 
+                    phone_number 
+                FROM  users U 
+                LEFT JOIN  user_types UT 
+                ON U.type = UT.typeid 
+                LEFT JOIN  user_info UI 
+                ON U.id = UI.iduser_info
+                WHERE U.username= '" + username + "' AND " + (hash ? "U.hash" : "U.password") + "='" + password + "'";
+            }
+
+            public string UpdateHash(string username, string password, string hash)
+            {
+                return @"
+                UPDATE Users 
+                Set hash = '" + hash + @"' 
+                WHERE username= '" + username + "' AND password='" + password + "'";
+            }
+        }
+
+        public string getPermissionDiv(string permission, string sectionName)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<td>" + sectionName + "</td>");
+
+            char[] RWDPermissions = permission.ToCharArray();
+            Dictionary<string, string> div =  new Dictionary<string, string>()
+                {
+                    {"R", "<td><span class=''></span></td>" },
+                    {"W", "<td><span class=''></span></td>" },
+                    {"D", "<td><span class=''></span></td>" }
+                };
+
+            foreach(char c in RWDPermissions)
+            {
+                try
+                {
+                    div[c.ToString()] = "<td><span class='fa fa-check text-primary'></span></td>";
+                }
+                catch
+                {
+                    
+                }
+            }
+            
+            foreach(KeyValuePair<string, string> entry in div)
+            {
+                sb.Append(entry.Value);
+            }
+
+            return sb.ToString();
+        }
+
         class DBConnect
         {
             private MySqlConnection connect;
@@ -398,9 +480,9 @@ namespace NR_Valut
             {
                 DataTable colCount = Select(query);
 
-                if(colCount.Rows.Count > 0)
+                if (colCount.Rows.Count > 0)
                 {
-                    return  Int32.Parse(colCount.Rows[0].ItemArray[0].ToString());
+                    return Int32.Parse(colCount.Rows[0].ItemArray[0].ToString());
                 }
 
                 return 0;
@@ -412,88 +494,6 @@ namespace NR_Valut
 
                 return Count(query) == 1;
             }
-        }
-
-        public DataTable AutoLogin(string username, string password)
-        {
-            Query dbQuery = new Query();
-
-            string query = dbQuery.LoginQuery(username, password, true);
-            DBConnect db = new DBConnect();
-            DataTable dbResp = db.Select(query);
-
-            return dbResp;
-        }
-
-        class Query
-        {
-            public string LoginQuery(string username, string password, bool hash = false)
-            {
-                return @"
-                SELECT 
-                    id, 
-                    username,
-                    name,
-                    password, 
-                    datecreated, 
-                    lastlogin, 
-                    user_type, 
-                    user_permission, 
-                    recipe_permission, 
-                    photo_permission,
-                    email, 
-                    verified, 
-                    birthday, 
-                    language, 
-                    phone_number 
-                FROM  users U 
-                LEFT JOIN  user_types UT 
-                ON U.type = UT.typeid 
-                LEFT JOIN  user_info UI 
-                ON U.id = UI.iduser_info
-                WHERE U.username= '" + username + "' AND " + (hash ? "U.hash" : "U.password") + "='" + password + "'";
-            }
-
-            public string UpdateHash(string username, string password, string hash)
-            {
-                return @"
-                UPDATE Users 
-                Set hash = '" + hash + @"' 
-                WHERE username= '" + username + "' AND password='" + password + "'";
-            }
-        }
-
-        public string getPermissionDiv(string permission, string sectionName)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<td>" + sectionName + "</td>");
-
-            char[] RWDPermissions = permission.ToCharArray();
-            Dictionary<string, string> div =  new Dictionary<string, string>()
-                {
-                    {"R", "<td><span class=''></span></td>" },
-                    {"W", "<td><span class=''></span></td>" },
-                    {"D", "<td><span class=''></span></td>" }
-                };
-
-            foreach(char c in RWDPermissions)
-            {
-                try
-                {
-                    div[c.ToString()] = "<td><span class='fa fa-check text-primary'></span></td>";
-                }
-                catch
-                {
-                    
-                }
-            }
-            
-            foreach(KeyValuePair<string, string> entry in div)
-            {
-                sb.Append(entry.Value);
-            }
-
-            return sb.ToString();
         }
     }
 }

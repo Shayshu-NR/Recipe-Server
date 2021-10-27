@@ -108,6 +108,7 @@
     <Content Include="email.aspx" />
     <Content Include="JS\form-builder.min.js" />
     <Content Include="JS\form-render.min.js" />
+    <Content Include="newrecipe.aspx" />
     <Content Include="photo.aspx" />
     <Content Include="recipe.aspx" />
     <Content Include="vault.aspx" />
@@ -121,6 +122,7 @@
     <Compile Include="admin.aspx.designer.cs">
       <DependentUpon>admin.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DBConnect.cs" />
     <Compile Include="constant.cs" />
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
@@ -135,6 +137,13 @@
     </Compile>
     <Compile Include="email.aspx.designer.cs">
       <DependentUpon>email.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="newrecipe.aspx.cs">
+      <DependentUpon>newrecipe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="newrecipe.aspx.designer.cs">
+      <DependentUpon>newrecipe.aspx</DependentUpon>
     </Compile>
     <Compile Include="photo.aspx.cs">
       <DependentUpon>photo.aspx</DependentUpon>

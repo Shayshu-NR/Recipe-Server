@@ -1,63 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Data;
 using System.Linq;
 using System.Web;
-using System.Web.Services;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using MySql.Data.MySqlClient;
-using System.Text.Json;
-using Newtonsoft;
-using System.Data;
-using Newtonsoft.Json;
-using HashLib;
-using System.Text;
-using System.IO;
+using System.Collections.Generic;
 
 namespace NR_Valut
 {
-    public partial class recipe : System.Web.UI.Page
+    public partial class newrecipe : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            DBConnect db = new DBConnect();
 
-        }
-
-        [WebMethod]
-        public static string NewRecipeLayout(string name, string structure)
-        {
-            DBConnect query = new DBConnect();
-            string cmd = "INSERT INTO recipe_layouts (layout_name, layout_structure, layout_lastmodified) VALUES ('" + name + "', '" + structure + "', '" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')";
-            int res = query.Insert(cmd);
-
-            using (StreamWriter w = File.AppendText(HttpContext.Current.Server.MapPath("log.txt")))
+            if (Request.Cookies["password"] != null && Request.Cookies["userName"] != null && Request.Cookies["loggedIn"] != null)
             {
-                Log(cmd, w);
+                try
+                {
+                    bool res = db.CheckLogin(Request.Cookies["password"].Value, Request.Cookies["userName"].Value);
+
+                    switch(res)
+                    {
+                        case true:
+                            // Get all the recipe layouts and construct the recipe builder....
+                            var layouts = db.Select("SELECT * FROM recipe_layouts");
+                            var recipeLayouts = new layoutData(JsonConvert.SerializeObject(layouts));
+
+
+                            break;
+                        default:
+                            Response.Redirect("default.aspx");
+                            break;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Response.Write(ex.Message);
+                }
             }
-
-            using (StreamReader r = File.OpenText(HttpContext.Current.Server.MapPath("log.txt")))
+            else
             {
-                DumpLog(r);
-            }
-
-            return "{\"Success\" : " + "\"" + res.ToString() + "\"" + "}";
-        }
-
-        public static void Log(string logMessage, TextWriter w)
-        {
-            w.Write("\r\nLog Entry : ");
-            w.WriteLine(DateTime.Now.ToLongDateString());
-            w.WriteLine("  :");
-            w.WriteLine(logMessage);
-            w.WriteLine("-------------------------------");
-        }
-
-        public static void DumpLog(StreamReader r)
-        {
-            string line;
-            while ((line = r.ReadLine()) != null)
-            {
-                Console.WriteLine(line);
+                Response.Redirect("default.aspx");
             }
         }
 
@@ -113,24 +97,20 @@ namespace NR_Valut
                 }
             }
 
-            public int Insert(string query)
+            public bool Insert()
             {
                 try
                 {
                     if (this.OpenConnection())
                     {
-                        MySqlCommand cmd = new MySqlCommand(query, connect);
-                        int res = cmd.ExecuteNonQuery();
-                        this.CloseConnection();
-                        
-                        return res;
+                        return true;
                     }
 
-                    return 0;
+                    return false;
                 }
                 catch (MySqlException e)
                 {
-                    return 0;
+                    return false;
                 }
             }
 
@@ -253,5 +233,48 @@ namespace NR_Valut
             }
         }
 
+
+        class layoutData
+        {
+            public List<recipeLayout> layouts { get; set; }
+
+            public layoutData(string jsonData)
+            {
+                layouts = JsonConvert.DeserializeObject<List<recipeLayout>>(jsonData);
+
+                layouts.ForEach(x => x.components = JsonConvert.DeserializeObject<List<recipeComponents>>(x.layout_structure));
+            }
+        }
+
+        class recipeLayout
+        {
+            public int layout_id { get; set; }
+            public string layout_structure { get; set; }
+            public string layout_name { get; set; }
+            public string layout_lastmodified { get; set; }
+            public List<recipeComponents> components { get; set; }
+
+        }
+
+        class recipeComponents
+        {
+            public string type { get; set; }
+            public string subtype { get; set; }
+            public string label { get; set; }
+            public string name { get; set; }
+            public bool access { get; set; }
+            public bool required { get; set; }
+            public bool inline { get; set; }
+            public bool toggle { get; set; }
+            public List<checkboxValues> values { get; set; }
+
+        }
+
+        class checkboxValues
+        {
+            public string label { get; set; }
+            public string value { get; set; }
+            bool selected { get; set; }
+        }
     }
 }
